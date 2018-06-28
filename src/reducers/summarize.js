@@ -21,8 +21,8 @@ const summarize = (fileName, fileContent, previousState = initialState) => {
   const frameworkState = {...previousState[framework]};
   frameworkState.files += 1;
   frameworkState.lines += linesParser(fileContent);
-  frameworkState.tests += testParser(fileName, fileName);
-  frameworkState.components += componentsParser(fileContent);
+  frameworkState.tests += testParser(fileName, fileContent);
+  frameworkState.components += componentsParser(framework, fileContent);
   return {
     ...previousState,
     [framework]: frameworkState
