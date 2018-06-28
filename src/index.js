@@ -1,6 +1,7 @@
 const writeJsonFile = require('write-json-file');
 const reducers = require('./reducers');
 const scan = require('./utilities/scan');
+const {addHistory} = require('./utilities/reports');
 
 const [, , projectPath] = process.argv;
 
@@ -29,8 +30,10 @@ const scanProject = projectPath => {
   });
 
   Promise.all(scanPromises).then(reports => {
-    writeJsonFile('reports.json', reports);
-    console.log('✓ all reports saved into reports.json');
+    addHistory(reports).then(reportsWithHistory => {
+      writeJsonFile('reports.json', reportsWithHistory);
+      console.log('✓ all reports saved into reports.json');
+    });
   });
 };
 
