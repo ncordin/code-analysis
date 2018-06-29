@@ -1,20 +1,22 @@
 const {today} = require('./date');
 const {read} = require('./files');
 
-const updateHistory = reports => {
-  const history = reports.find(report => report.name === 'history') || [];
-  const summary = reports.find(report => report.name === 'summarize').content;
+const updateHistory = (reports, previousHistory) => {
+  const summary = reports.summarize || {};
 
-  history.push({date: today(), ...summary});
-  reports.push({name: 'history', content: history});
+  previousHistory.push({date: today(), ...summary});
+  reports.history = previousHistory;
 
   return reports;
 };
 
 const addHistory = reports => {
   return read('reports.json')
-    .then(content => updateHistory(content))
-    .catch(() => updateHistory(reports));
+    .then(content => {
+      const history = JSON.parse(content).history || [];
+      return updateHistory(reports, history);
+    })
+    .catch(() => updateHistory(reports, []));
 };
 
 module.exports = {
